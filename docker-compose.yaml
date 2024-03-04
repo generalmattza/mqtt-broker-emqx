@@ -1,0 +1,30 @@
+version: "3"
+
+services:
+  emqx-broker:
+    image: emqx:latest
+    container_name: emqx-broker
+    environment:
+      - "EMQX_NODE_NAME=${BROKER_NODE_NAME}"
+    healthcheck:
+      test: [ "CMD", "/opt/emqx/bin/emqx", "ctl", "status" ]
+      interval: 5s
+      timeout: 25s
+      retries: 5
+    user: "1001"
+    networks:
+      - mqtt5-network
+    ports:
+      - 1883:1883
+      - 8083:8083
+      - 8084:8084
+      - 8883:8883
+      - 18083:18083
+    volumes:
+      - $PWD/data:/opt/emqx/data
+      - $PWD/log:/opt/emqx/log
+
+networks:
+  mqtt5-network:
+    name: mqtt5-network
+    driver: bridge
